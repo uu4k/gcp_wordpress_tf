@@ -64,7 +64,7 @@ write_files:
     Restart=always
     ExecStartPre=-/usr/bin/docke stot https-portal
     ExecStartPre=-/usr/bin/docker rm -v https-portal
-    ExecStart=/usr/bin/docker run --net wordpress_network -p 443:443 -p 80:80 --name=https-portal -e DOMAINS="blog.uu4k.me -> http://wordpress" -e STAGE="production" --log-driver=gcplogs steveltn/https-portal:1.2.3
+    ExecStart=/usr/bin/docker run --net wordpress_network -p 443:443 -p 80:80 --name=https-portal -e DOMAINS="blog.uu4k.me -> http://wordpress" -e STAGE="production" --log-driver=gcplogs -v /var/https-portal/:/var/lib/https-portal/ steveltn/https-portal:1.3
 - path: /var/startup.sh
   permissions: 0744
   owner: root
@@ -77,6 +77,7 @@ write_files:
         mount -o discard,defaults /dev/sdb /mnt/disks/wordpress-db
     fi
 
+    mkdir -p /var/https-portal
 runcmd:
 - sh /var/startup.sh
 - docker network create wordpress_network
